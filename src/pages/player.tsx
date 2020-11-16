@@ -4,21 +4,21 @@ import Cookies from "cookies";
 import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
-import { SpotifyState, SpotifyUser } from "../types/spotify";
+import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
 
 interface Props {
   user: SpotifyUser;
   accessToken: string;
 }
 
-const play = (accessToken: string, deviceId: string) => {
+const play = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyTrack | undefined) => {
   return fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      uris: ["spotify:track:1lCRw5FEZ1gPDNPzy1K4zW"],
+      uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
     }),
   });
 };
@@ -37,11 +37,13 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [paused, setPaused] = React.useState(false);
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
+  const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
 
   React.useEffect(() => {
     const playerStateChanged = (state: SpotifyState) => {
       setPaused(state.paused);
       setCurrentTrack(state.track_window.current_track.name);
+      setCurrentTrackInfos(state.track_window.current_track);
     };
     if (player) {
       player.addListener("player_state_changed", playerStateChanged);
@@ -64,7 +66,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <p>{currentTrack}</p>
       <button
         onClick={() => {
-          paused ? play(accessToken, deviceId) : pause(accessToken, deviceId);
+          paused ? play(accessToken, deviceId, currentTrackInfos) : pause(accessToken, deviceId);
         }}
       >
         {paused ? "play" : "pause"}
