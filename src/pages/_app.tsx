@@ -1,5 +1,6 @@
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
+import "../../public/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
