@@ -1,5 +1,5 @@
-!*.sample
 .env*
+!*.sample
 .next/
 *.DS_Store
 build
