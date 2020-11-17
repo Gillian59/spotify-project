@@ -104,7 +104,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
       <p>{currentTrack}</p>
-      <p>{positionInMusic}</p>
       <button
         onClick={() => {
           previous(accessToken, deviceId, currentTrackInfos);
