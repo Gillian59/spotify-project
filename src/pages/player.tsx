@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 interface Props {
   user: SpotifyUser;
@@ -72,6 +73,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
+  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const playerStateChanged = (state: SpotifyState) => {
@@ -95,15 +97,29 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     };
   }, [player]);
 
+  React.useEffect(() => {
+    isPlaying &&
+      currentTrackInfos &&
+      positionInMusic <= currentTrackInfos.duration_ms &&
+      setTimeout(() => setPositionInMusic(positionInMusic + 1000), 1000);
+  }, [positionInMusic, isPlaying]);
+
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   const user = data;
+
+  const calculateInfo = (positionInMusic / (currentTrackInfos ? currentTrackInfos.duration_ms : 1)) * 100;
 
   return (
     <Layout isLoggedIn={true}>
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
       <p>{currentTrack}</p>
+      <p>
+        {positionInMusic} / {currentTrackInfos?.duration_ms}
+      </p>
+      <p>{calculateInfo}</p>
+      <ProgressBar now={calculateInfo} />
       <button
         onClick={() => {
           previous(accessToken, deviceId, currentTrackInfos);
@@ -113,7 +129,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       </button>
       <button
         onClick={() => {
-          paused ? play(accessToken, deviceId, currentTrackInfos, positionInMusic) : pause(accessToken, deviceId);
+          paused
+            ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
+            : (pause(accessToken, deviceId), setIsPlaying(false));
         }}
       >
         {paused ? "play" : "pause"}
