@@ -32,9 +32,36 @@ const pause = (accessToken: string, deviceId: string) => {
   });
 };
 
+const next = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyTrack | undefined) => {
+  return fetch(`https://api.spotify.com/v1/me/player/next?device_id=${deviceId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
+    }),
+  });
+};
+const previous = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyTrack | undefined) => {
+  return fetch(`https://api.spotify.com/v1/me/player/previous?device_id=${deviceId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
+    }),
+  });
+};
+
 const Player: NextPage<Props> = ({ accessToken }) => {
   const { data, error } = useSWR("/api/get-user-info");
   const [paused, setPaused] = React.useState(false);
+
+  // const [next, setNext] = React.useState();
+  // const [previous, setPrevious] = React.useState();
+
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
@@ -42,6 +69,10 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   React.useEffect(() => {
     const playerStateChanged = (state: SpotifyState) => {
       setPaused(state.paused);
+
+      // setNext(state.track_window.next_tracks);
+      // setPrevious(state.track_window.previous_tracks);
+
       setCurrentTrack(state.track_window.current_track.name);
       setCurrentTrackInfos(state.track_window.current_track);
     };
@@ -66,10 +97,24 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <p>{currentTrack}</p>
       <button
         onClick={() => {
+          previous(accessToken, deviceId, currentTrackInfos);
+        }}
+      >
+        previous
+      </button>
+      <button
+        onClick={() => {
           paused ? play(accessToken, deviceId, currentTrackInfos) : pause(accessToken, deviceId);
         }}
       >
         {paused ? "play" : "pause"}
+      </button>
+      <button
+        onClick={() => {
+          next(accessToken, deviceId, currentTrackInfos);
+        }}
+      >
+        next
       </button>
     </Layout>
   );
