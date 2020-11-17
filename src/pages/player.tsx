@@ -12,7 +12,12 @@ interface Props {
   accessToken: string;
 }
 
-const play = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyTrack | undefined) => {
+const play = (
+  accessToken: string,
+  deviceId: string,
+  currentTrackInfos: SpotifyTrack | undefined,
+  calculatedTime: number | undefined,
+) => {
   return fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
     headers: {
@@ -20,6 +25,7 @@ const play = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyT
     },
     body: JSON.stringify({
       uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
+      position_ms: calculatedTime,
     }),
   });
 };
@@ -66,6 +72,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
+  const [timeStamp1, setTimeStamp1] = React.useState<number | undefined>();
+  const [timeStamp2, setTimeStamp2] = React.useState<number | undefined>();
+  const [calculatedTime, setCalculatedTime] = React.useState<number>(0);
 
   React.useEffect(() => {
     const playerStateChanged = (state: SpotifyState) => {
@@ -77,6 +86,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       setCurrentTrack(state.track_window.current_track.name);
       setCurrentTrackInfos(state.track_window.current_track);
     };
+
     if (player) {
       player.addListener("player_state_changed", playerStateChanged);
     }
@@ -91,21 +101,32 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   if (!data) return <div>loading...</div>;
   const user = data;
 
+  const calculateTime = (): number => {
+    if (timeStamp1 && timeStamp2) {
+      const calculated = timeStamp2 - timeStamp1;
+      return calculated;
+    } else {
+      return 0;
+    }
+  };
+
   return (
     <Layout isLoggedIn={true}>
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
       <p>{currentTrack}</p>
+      <p>timeStamp1 : {timeStamp1}</p>
+      <p>timeStamp2 : {timeStamp2}</p>
+      <p>calculateTime func : {calculateTime()}</p>
+      <p>calculatedTime : {calculatedTime}</p>
       <button
         onClick={() => {
-          previous(accessToken, deviceId, currentTrackInfos);
-        }}
-      >
-        previous
-      </button>
-      <button
-        onClick={() => {
-          paused ? play(accessToken, deviceId, currentTrackInfos) : pause(accessToken, deviceId);
+          paused
+            ? (play(accessToken, deviceId, currentTrackInfos, calculatedTime),
+              setTimeStamp1(Date.now()),
+              setCalculatedTime(calculatedTime + calculateTime()))
+            : (pause(accessToken, deviceId), setTimeStamp2(Date.now()));
+
         }}
       >
         {paused ? "play" : "pause"}
