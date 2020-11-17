@@ -1,0 +1,64 @@
+.App {
+  height: calc(100vh - 90px);
+  background: lightgray;
+}
+.navBar {
+  width: 260px;
+  height: 100%;
+  background: black;
+  padding: 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+.outerWrap {
+  background: grey;
+  height: 100vh;
+  min-height: 100%;
+}
+.navBar ul {
+  margin: 0;
+  padding: 0;
+}
+.navBar li {
+  color: rgba(221, 221, 221, 0.616);
+  list-style-type: none;
+  border-radius: 5px;
+  padding: 0.5rem 0.8rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  
+  align-items: center;
+}
+.navBar li:hover {
+  background: rgba(221, 221, 221, 0.336);
+  border-radius: 5px;
+}
+
+.pictureAlbum {
+  background-color: rgb(138, 138, 138);
+  color: #ddd;
+  border: 1px solid white;
+  text-align: center;
+  align-items: center;
+  width: 100%;
+  height: 260px;
+  margin-block-start: auto;
+  margin-bottom: 12px;
+}
+
+.musicControls {
+  background: #ddd;
+  text-align: center;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 2;
+  position: relative;
+  border-top: 1px solid darkgray;
+  color: black;
+  background-color: rgb(138, 138, 138);
+}

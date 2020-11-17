@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import "../styles/global.css";
 
+
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <SWRConfig
