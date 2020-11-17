@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import Lecteur from "../components/LecteurFooter";
 
 interface Props {
   user: SpotifyUser;
@@ -64,13 +65,16 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
       <p>{currentTrack}</p>
-      <button
-        onClick={() => {
-          paused ? play(accessToken, deviceId, currentTrackInfos) : pause(accessToken, deviceId);
-        }}
-      >
-        {paused ? "play" : "pause"}
-      </button>
+      <Lecteur>
+        <button
+          id="buttonPlay"
+          onClick={() => {
+            paused ? play(accessToken, deviceId, currentTrackInfos) : pause(accessToken, deviceId);
+          }}
+        >
+          {paused ? "play" : "pause"}
+        </button>
+      </Lecteur>
     </Layout>
   );
 };
