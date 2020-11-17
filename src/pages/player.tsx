@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import Lecteur from "../components/LecteurFooter";
 
 interface Props {
   user: SpotifyUser;
