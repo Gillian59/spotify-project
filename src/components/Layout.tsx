@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+// import Leftbloc from "../components/LeftBloc";
 
 type Props = {
   isLoggedIn: boolean;
@@ -8,22 +9,25 @@ type Props = {
 
 const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl }) => {
   return (
-    <nav>
-      <p>
-        <a href="/">home</a>
-      </p>
-      {isLoggedIn ? (
-        <>
-          <p>
-            <a href="/api/logout">logout</a>
-          </p>
-        </>
-      ) : (
+    <>
+      {/* <Leftbloc /> */}
+      <nav>
         <p>
-          <a href={spotifyLoginUrl}>login</a>
+          <a href="/">home</a>
         </p>
-      )}
-    </nav>
+        {isLoggedIn ? (
+          <>
+            <p>
+              <a href="/api/logout">logout</a>
+            </p>
+          </>
+        ) : (
+          <p>
+            <a href={spotifyLoginUrl}>login</a>
+          </p>
+        )}
+      </nav>
+    </>
   );
 };
 
