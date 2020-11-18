@@ -80,7 +80,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [paused, setPaused] = React.useState(false);
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [artisteName, setArtisteName] = React.useState("");
-  // const [tracksList, setTracksList] = React.useState([]);
+  const [tracksList, setTracksList] = React.useState([]);
   // const [albumImg, setAlbumImg] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
@@ -138,6 +138,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   return (
     <Layout isLoggedIn={true}>
       <MainContainer>
+        <TracksList tracksList={tracksList} />
+        {/* <TracksList tracksNamesList={["piste 1", "piste 2", "piste 3"]} /> */}
+        {console.log(tracksList)}
         <MusicControls>
           <Row id="musicControlsContainer">
             <Col md={2} id="song-and-artiste">

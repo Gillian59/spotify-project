@@ -1,5 +1,5 @@
 import React from "react";
-import { Artist, TracksListItem } from "../types/spotify";
+import { TracksListItem } from "../types/spotify";
 
 type TracksListProps = {
   tracksList: TracksListItem[];
