@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import Leftbloc from "../components/LeftBloc";
+import MainContener from "../components/MainContainer";
 
 const Radio = () => {
   return (
     <div>
-      <Leftbloc />
+      <MainContener />
       <Link href="/" passHref>
         home
       </Link>

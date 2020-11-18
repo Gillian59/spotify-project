@@ -6,6 +6,9 @@ import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import { Lecteur } from "../components/LecteurFooter";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 interface Props {
   user: SpotifyUser;
@@ -61,28 +64,39 @@ const previous = (accessToken: string, deviceId: string, currentTrackInfos: Spot
     }),
   });
 };
+const getAlbumTracks = async (accessToken: string, id: string) => {
+  return await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
 
 const Player: NextPage<Props> = ({ accessToken }) => {
   const { data, error } = useSWR("/api/get-user-info");
   const [paused, setPaused] = React.useState(false);
-
-  // const [next, setNext] = React.useState();
-  // const [previous, setPrevious] = React.useState();
-
   const [currentTrack, setCurrentTrack] = React.useState("");
+  const [albumTrack, setAlbumTrack] = React.useState("");
+  // const [tracksList, setTracksList] = React.useState([]);
+  const [albumImg, setAlbumImg] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
 
   React.useEffect(() => {
+    getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
+      const { items: tracks } = await response.json();
+      console.log(tracks);
+      // return setTracksList(tracks);
+    });
+
     const playerStateChanged = (state: SpotifyState) => {
       setPaused(state.paused);
-
-      // setNext(state.track_window.next_tracks);
-      // setPrevious(state.track_window.previous_tracks);
-
       setCurrentTrack(state.track_window.current_track.name);
+      setAlbumTrack(state.track_window.current_track.album.name);
+      setAlbumImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
       setPositionInMusic(state.position);
     };
@@ -120,6 +134,10 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       </p>
       <p>{calculateInfo}</p>
       <ProgressBar now={calculateInfo} />
+      <p>nom de la zic : {currentTrack}</p>
+
+      <h4>{albumTrack}</h4>
+      <img src={albumImg} alt="" />
       <button
         onClick={() => {
           previous(accessToken, deviceId, currentTrackInfos);
