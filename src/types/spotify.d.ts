@@ -68,3 +68,15 @@ export type SpotifyUser = {
   type?: string;
   uri?: string;
 };
+
+export type TracksListItem = {
+  id: string;
+  name: string;
+  track_number: number;
+  href: string;
+  artists: Artist[];
+};
+
+export type Artist = {
+  name: string;
+};
