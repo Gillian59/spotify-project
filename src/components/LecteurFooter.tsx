@@ -1,21 +1,19 @@
 import React from "react";
-import currentTrack from "../pages/player";
-
-export default function Lecteur() {
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+export const Lecteur: React.FC = ({ children }) => {
   return (
-    <div id="LecteurFooter" className="col-12" color="">
-      <img
-        className="col-3"
-        src="https://d1fmx1rbmqrxrr.cloudfront.net/cnet/optim/i/edit/2019/04/eso1644bsmall__w770.jpg"
-        width="150vh"
-        height="180vh"
-      />
-      <div>
-        <div className="col-6">
-          <p>Nom de la Musique: {currentTrack}</p>
+    <Row>
+      <Col xs={12}>
+        <div id="LecteurFooter">
+          <img
+            src="https://d1fmx1rbmqrxrr.cloudfront.net/cnet/optim/i/edit/2019/04/eso1644bsmall__w770.jpg"
+            width="150vh"
+            height="180vh"
+          />
+          <div>{children}</div>
         </div>
-        <div className="col-6">Nom de l'artiste</div>
-      </div>
-    </div>
+      </Col>
+    </Row>
   );
-}
+};

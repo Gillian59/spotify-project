@@ -5,6 +5,9 @@ import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import { Lecteur } from "../components/LecteurFooter";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 interface Props {
   user: SpotifyUser;
@@ -15,7 +18,7 @@ const play = (
   accessToken: string,
   deviceId: string,
   currentTrackInfos: SpotifyTrack | undefined,
-  calculatedTime: number | undefined,
+  positionInMusic: number,
 ) => {
   return fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
@@ -24,7 +27,7 @@ const play = (
     },
     body: JSON.stringify({
       uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
-      position_ms: calculatedTime,
+      position_ms: positionInMusic,
     }),
   });
 };
@@ -78,9 +81,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [albumImg, setAlbumImg] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
-  const [timeStamp1, setTimeStamp1] = React.useState<number | undefined>();
-  const [timeStamp2, setTimeStamp2] = React.useState<number | undefined>();
-  const [calculatedTime, setCalculatedTime] = React.useState<number>(0);
+  const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
 
   React.useEffect(() => {
     getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
@@ -95,6 +96,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       setAlbumTrack(state.track_window.current_track.album.name);
       setAlbumImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
+      setPositionInMusic(state.position);
     };
 
     if (player) {
@@ -111,15 +113,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   if (!data) return <div>loading...</div>;
   const user = data;
 
-  const calculateTime = (): number => {
-    if (timeStamp1 && timeStamp2) {
-      const calculated = timeStamp2 - timeStamp1;
-      return calculated;
-    } else {
-      return 0;
-    }
-  };
-
   return (
     <Layout isLoggedIn={true}>
       <h1>Player</h1>
@@ -128,10 +121,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
 
       <h4>{albumTrack}</h4>
       <img src={albumImg} alt="" />
-      {/* <p>timeStamp1 : {timeStamp1}</p>
-      <p>timeStamp2 : {timeStamp2}</p>
-      <p>calculateTime func : {calculateTime()}</p>
-      <p>calculatedTime : {calculatedTime}</p> */}
       <button
         onClick={() => {
           previous(accessToken, deviceId, currentTrackInfos);
