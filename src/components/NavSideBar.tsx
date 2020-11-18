@@ -2,19 +2,18 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const Nav = () => {
+const NavSideBar = () => {
   const router = useRouter();
   const styles = {
-    logo: {
-      width: "80%",
-      padding: "1.5rem 1.5rem",
-    },
     homelogo: {
       color: "#FFF",
       width: "5%",
       padding: "1.5rem 1.5rem",
     },
-
+    logo: {
+      width: "80%",
+      padding: "1.5rem 1.5rem",
+    },
     link: {
       color: "grey",
     },
@@ -25,10 +24,6 @@ const Nav = () => {
   };
   return (
     <div className="navBar">
-      <div className="logo">
-        <img src="logo.png" alt="logo spotify" style={styles.logo} />
-      </div>
-
       <ul>
         <Link href="/" passHref>
           <li style={router.pathname === "/" ? styles.active : styles.link}>
@@ -48,4 +43,4 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export default NavSideBar;

@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import MainContainer from "../components/MainContainer";
+import Link from "next/link";
 
 type Props = {
   isLoggedIn: boolean;
@@ -11,20 +11,20 @@ type Props = {
 const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl }) => {
   return (
     <>
-      <MainContainer />
-
-      <nav>
-        <p>
-          <a href="/">home</a>
-        </p>
+      <nav id="navbar">
+        <Link href="/" passHref>
+          <a id="spotify-logo-container">
+            <img src="/logo.png" alt="logo spotify" id="spotify-logo" />
+          </a>
+        </Link>
         {isLoggedIn ? (
           <>
-            <p>
+            <p className="navbar-items">
               <a href="/api/logout">logout</a>
             </p>
           </>
         ) : (
-          <p>
+          <p className="navbar-items">
             <a href={spotifyLoginUrl}>login</a>
           </p>
         )}

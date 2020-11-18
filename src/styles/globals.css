@@ -1,5 +1,5 @@
 .App {
-  height: calc(100vh - 90px);
+  height: 81vh;
   display: flex;
   background: lightgray;
 }
@@ -52,18 +52,20 @@
 .musicControls {
   background: #ddd;
   text-align: center;
-  height: 90px;
+  height: 11vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   z-index: 2;
   position: relative;
-  border-top: 1px solid darkgray;
-  color: black;
-  background-color: rgb(138, 138, 138);
+  border-top: 1px solid #282828;
+  color: white;
+  background-color: #282828;
 }
-  .tracksList{
-    width: -webkit-fill-available;
-    background-color: brown;
-  }
+
+.tracksList{
+  width: -webkit-fill-available;
+  background-color: brown;
+}

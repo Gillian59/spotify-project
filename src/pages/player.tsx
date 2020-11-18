@@ -8,6 +8,9 @@ import { SpotifyState, SpotifyUser, SpotifyTrack, TracksListItem } from "../type
 import ProgressBar from "react-bootstrap/ProgressBar";
 import TracksList from "../components/TracksList";
 import MusicControls from "../components/MusicControls";
+import MainContainer from "../components/MainContainer";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 interface Props {
   user: SpotifyUser;
@@ -76,9 +79,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const { data, error } = useSWR("/api/get-user-info");
   const [paused, setPaused] = React.useState(false);
   const [currentTrack, setCurrentTrack] = React.useState("");
-  const [albumTrack, setAlbumTrack] = React.useState("");
-  const [tracksList, setTracksList] = React.useState([]);
-  const [albumImg, setAlbumImg] = React.useState("");
+  const [artisteName, setArtisteName] = React.useState("");
+  // const [tracksList, setTracksList] = React.useState([]);
+  // const [albumImg, setAlbumImg] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
@@ -104,8 +107,8 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     const playerStateChanged = (state: SpotifyState) => {
       setPaused(state.paused);
       setCurrentTrack(state.track_window.current_track.name);
-      setAlbumTrack(state.track_window.current_track.album.name);
-      setAlbumImg(state.track_window.current_track.album.images[0].url);
+      setArtisteName(state.track_window.current_track.artists[0].name);
+      // setAlbumImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
       setPositionInMusic(state.position);
     };
@@ -129,52 +132,48 @@ const Player: NextPage<Props> = ({ accessToken }) => {
 
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
-  const user = data;
 
   const calculateInfo = (positionInMusic / (currentTrackInfos ? currentTrackInfos.duration_ms : 1)) * 100;
 
   return (
     <Layout isLoggedIn={true}>
-      <TracksList tracksList={tracksList} />
-      {/* <TracksList tracksNamesList={["piste 1", "piste 2", "piste 3"]} /> */}
-      {console.log(tracksList)}
-      <h1>Player</h1>
-      <p>Welcome {user && user.display_name}</p>
-      <p>{currentTrack}</p>
-      <p>
-        {positionInMusic} / {currentTrackInfos?.duration_ms}
-      </p>
-      <p>{calculateInfo}</p>
-      <MusicControls user={user} accessToken={accessToken}>
-        <ProgressBar now={calculateInfo} />
-        <p>nom de la zic : {currentTrack}</p>
-
-        <h4>{albumTrack}</h4>
-        <img src={albumImg} alt="" />
-        <button
-          onClick={() => {
-            previous(accessToken, deviceId, currentTrackInfos);
-          }}
-        >
-          previous
-        </button>
-        <button
-          onClick={() => {
-            paused
-              ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
-              : (pause(accessToken, deviceId), setIsPlaying(false));
-          }}
-        >
-          {paused ? "play" : "pause"}
-        </button>
-        <button
-          onClick={() => {
-            next(accessToken, deviceId, currentTrackInfos);
-          }}
-        >
-          next
-        </button>
-      </MusicControls>
+      <MainContainer>
+        <MusicControls>
+          <Row id="musicControlsContainer">
+            <Col md={2} id="song-and-artiste">
+              <small>{currentTrack}</small>
+              <small>{artisteName}</small>
+            </Col>
+            <Col md={8}>
+              {/* <img src={albumImg} alt={albumImg} /> */}
+              <button
+                onClick={() => {
+                  previous(accessToken, deviceId, currentTrackInfos);
+                }}
+              >
+                previous
+              </button>
+              <button
+                onClick={() => {
+                  paused
+                    ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
+                    : (pause(accessToken, deviceId), setIsPlaying(false));
+                }}
+              >
+                {paused ? "play" : "pause"}
+              </button>
+              <button
+                onClick={() => {
+                  next(accessToken, deviceId, currentTrackInfos);
+                }}
+              >
+                next
+              </button>
+              <ProgressBar now={calculateInfo} />
+            </Col>
+          </Row>
+        </MusicControls>
+      </MainContainer>
     </Layout>
   );
 };

@@ -1,9 +1,9 @@
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import "../styles/global.css";
+import "../styles/globals.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
