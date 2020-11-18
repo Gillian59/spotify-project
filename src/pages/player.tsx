@@ -4,8 +4,9 @@ import Cookies from "cookies";
 import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
-import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import { SpotifyState, SpotifyUser, SpotifyTrack, TracksListItem } from "../types/spotify";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import TracksList from "../components/TracksList";
 import MusicControls from "../components/MusicControls";
 import MainContainer from "../components/MainContainer";
 import Row from "react-bootstrap/Row";
@@ -90,7 +91,17 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
       const { items: tracks } = await response.json();
       console.log(tracks);
-      // return setTracksList(tracks);
+      const formatedTracks = tracks.map((track: TracksListItem) => {
+        return {
+          id: track.id,
+          name: track.name,
+          track_number: track.track_number,
+          href: track.href,
+          artists: track.artists,
+        };
+      });
+      console.log("PPPPPPPPPP", formatedTracks);
+      setTracksList(formatedTracks);
     });
 
     const playerStateChanged = (state: SpotifyState) => {
