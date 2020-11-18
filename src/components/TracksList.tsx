@@ -1,15 +1,21 @@
 import React from "react";
+import { TracksListItem } from "../types/spotify";
 
-type tracksListProps = {
-  tracksNamesList: string[];
+type TracksListProps = {
+  tracksList: TracksListItem[];
 };
 
-const TracksList: React.FC<tracksListProps> = ({ tracksNamesList }) => {
+const TracksList: React.FC<TracksListProps> = ({ tracksList }) => {
+  console.log("TrackNAMELIST @@@@@", tracksList);
   return (
     <div className="tracksList">
       <ul>
-        {tracksNamesList.map((trackName) => {
-          return <li key={trackName}>{trackName}</li>;
+        {tracksList.map((track) => {
+          return (
+            <>
+              <li key={track.id}>{track.name}</li>
+            </>
+          );
         })}
       </ul>
     </div>

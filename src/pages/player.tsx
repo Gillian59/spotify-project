@@ -4,11 +4,12 @@ import Cookies from "cookies";
 import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
-import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import { SpotifyState, SpotifyUser, SpotifyTrack, TracksListItem } from "../types/spotify";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { Lecteur } from "../components/LecteurFooter";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+// import { Lecteur } from "../components/LecteurFooter";
+// import Row from "react-bootstrap/Row";
+// import Col from "react-bootstrap/Col";
+import TracksList from "../components/TracksList";
 
 interface Props {
   user: SpotifyUser;
@@ -78,7 +79,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [paused, setPaused] = React.useState(false);
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [albumTrack, setAlbumTrack] = React.useState("");
-  // const [tracksList, setTracksList] = React.useState([]);
+  const [tracksList, setTracksList] = React.useState([]);
   const [albumImg, setAlbumImg] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
@@ -89,7 +90,17 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
       const { items: tracks } = await response.json();
       console.log(tracks);
-      // return setTracksList(tracks);
+      const formatedTracks = tracks.map((track: TracksListItem) => {
+        return {
+          id: track.id,
+          name: track.name,
+          track_number: track.track_number,
+          href: track.href,
+          artists: track.artists,
+        };
+      });
+      console.log("PPPPPPPPPP", formatedTracks);
+      setTracksList(formatedTracks);
     });
 
     const playerStateChanged = (state: SpotifyState) => {
@@ -126,6 +137,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
 
   return (
     <Layout isLoggedIn={true}>
+      <TracksList tracksList={tracksList} />
+      {/* <TracksList tracksNamesList={["piste 1", "piste 2", "piste 3"]} /> */}
+      {console.log(tracksList)}
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
       <p>{currentTrack}</p>
