@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import Leftbloc from "../components/LeftBloc";
+import MainContainer from "../components/MainContainer";
 
 const Parcourir = () => {
   return (
     <div>
-      <Leftbloc />
+      <MainContainer />
       <Link href="/" passHref>
         home
       </Link>
