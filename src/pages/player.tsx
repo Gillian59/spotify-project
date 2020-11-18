@@ -5,6 +5,9 @@ import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import { Lecteur } from "../components/LecteurFooter";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 interface Props {
   user: SpotifyUser;
@@ -104,27 +107,47 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
       <p>{currentTrack}</p>
-      <button
-        onClick={() => {
-          previous(accessToken, deviceId, currentTrackInfos);
-        }}
-      >
-        previous
-      </button>
-      <button
-        onClick={() => {
-          paused ? play(accessToken, deviceId, currentTrackInfos, positionInMusic) : pause(accessToken, deviceId);
-        }}
-      >
-        {paused ? "play" : "pause"}
-      </button>
-      <button
-        onClick={() => {
-          next(accessToken, deviceId, currentTrackInfos);
-        }}
-      >
-        next
-      </button>
+      <p>timeStamp1 : {timeStamp1}</p>
+      <p>timeStamp2 : {timeStamp2}</p>
+      <p>calculateTime func : {calculateTime()}</p>
+      <p>calculatedTime : {calculatedTime}</p>
+      <Lecteur>
+        <Row>
+          <Col xs={4}>
+            <div>
+              <p>{currentTrack}</p>
+            </div>
+            <div>Nom de l'artiste </div>
+          </Col>
+          <Col xs={8}>
+            <button
+              onClick={() => {
+                previous(accessToken, deviceId, currentTrackInfos);
+              }}
+            >
+              previous
+            </button>
+            <button
+              onClick={() => {
+                paused
+                  ? (play(accessToken, deviceId, currentTrackInfos, calculatedTime),
+                    setTimeStamp1(Date.now()),
+                    setCalculatedTime(calculatedTime + calculateTime()))
+                  : (pause(accessToken, deviceId), setTimeStamp2(Date.now()));
+              }}
+            >
+              {paused ? "play" : "pause"}
+            </button>
+            <button
+              onClick={() => {
+                next(accessToken, deviceId, currentTrackInfos);
+              }}
+            >
+              next
+            </button>
+          </Col>
+        </Row>
+      </Lecteur>
     </Layout>
   );
 };
