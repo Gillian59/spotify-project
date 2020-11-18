@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
+import ProgressBar from "react-bootstrap/ProgressBar";
 import { Lecteur } from "../components/LecteurFooter";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -82,6 +83,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
+  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
@@ -109,14 +111,29 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     };
   }, [player]);
 
+  React.useEffect(() => {
+    isPlaying &&
+      currentTrackInfos &&
+      positionInMusic <= currentTrackInfos.duration_ms &&
+      setTimeout(() => setPositionInMusic(positionInMusic + 1000), 1000);
+  }, [positionInMusic, isPlaying]);
+
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   const user = data;
+
+  const calculateInfo = (positionInMusic / (currentTrackInfos ? currentTrackInfos.duration_ms : 1)) * 100;
 
   return (
     <Layout isLoggedIn={true}>
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
+      <p>{currentTrack}</p>
+      <p>
+        {positionInMusic} / {currentTrackInfos?.duration_ms}
+      </p>
+      <p>{calculateInfo}</p>
+      <ProgressBar now={calculateInfo} />
       <p>nom de la zic : {currentTrack}</p>
 
       <h4>{albumTrack}</h4>
@@ -131,10 +148,8 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <button
         onClick={() => {
           paused
-            ? (play(accessToken, deviceId, currentTrackInfos, calculatedTime),
-              setTimeStamp1(Date.now()),
-              setCalculatedTime(calculatedTime + calculateTime()))
-            : (pause(accessToken, deviceId), setTimeStamp2(Date.now()));
+            ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
+            : (pause(accessToken, deviceId), setIsPlaying(false));
         }}
       >
         {paused ? "play" : "pause"}
