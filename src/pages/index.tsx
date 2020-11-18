@@ -2,7 +2,6 @@ import Cookies from "cookies";
 import { GetServerSideProps } from "next";
 import useSWR from "swr";
 import { Layout } from "../components/Layout";
-import Lecteur from "../components/LecteurFooter";
 
 type IndexProps = {
   spotifyLoginUrl?: string;
