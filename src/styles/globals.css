@@ -1,5 +1,6 @@
 .App {
   height: calc(100vh - 90px);
+  display: flex;
   background: lightgray;
 }
 .navBar {
@@ -62,3 +63,7 @@
   color: black;
   background-color: rgb(138, 138, 138);
 }
+  .tracksList{
+    width: -webkit-fill-available;
+    background-color: brown;
+  }

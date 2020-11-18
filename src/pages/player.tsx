@@ -60,15 +60,22 @@ const previous = (accessToken: string, deviceId: string, currentTrackInfos: Spot
     }),
   });
 };
+const getAlbumTracks = async (accessToken: string, id: string) => {
+  return await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
 
 const Player: NextPage<Props> = ({ accessToken }) => {
   const { data, error } = useSWR("/api/get-user-info");
   const [paused, setPaused] = React.useState(false);
-
-  // const [next, setNext] = React.useState();
-  // const [previous, setPrevious] = React.useState();
-
   const [currentTrack, setCurrentTrack] = React.useState("");
+  const [albumTrack, setAlbumTrack] = React.useState("");
+  // const [tracksList, setTracksList] = React.useState([]);
+  const [albumImg, setAlbumImg] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [timeStamp1, setTimeStamp1] = React.useState<number | undefined>();
@@ -76,13 +83,17 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [calculatedTime, setCalculatedTime] = React.useState<number>(0);
 
   React.useEffect(() => {
+    getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
+      const { items: tracks } = await response.json();
+      console.log(tracks);
+      // return setTracksList(tracks);
+    });
+
     const playerStateChanged = (state: SpotifyState) => {
       setPaused(state.paused);
-
-      // setNext(state.track_window.next_tracks);
-      // setPrevious(state.track_window.previous_tracks);
-
       setCurrentTrack(state.track_window.current_track.name);
+      setAlbumTrack(state.track_window.current_track.album.name);
+      setAlbumImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
     };
 
@@ -113,11 +124,14 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     <Layout isLoggedIn={true}>
       <h1>Player</h1>
       <p>Welcome {user && user.display_name}</p>
-      <p>{currentTrack}</p>
-      <p>timeStamp1 : {timeStamp1}</p>
+      <p>nom de la zic : {currentTrack}</p>
+
+      <h4>{albumTrack}</h4>
+      <img src={albumImg} alt="" />
+      {/* <p>timeStamp1 : {timeStamp1}</p>
       <p>timeStamp2 : {timeStamp2}</p>
       <p>calculateTime func : {calculateTime()}</p>
-      <p>calculatedTime : {calculatedTime}</p>
+      <p>calculatedTime : {calculatedTime}</p> */}
       <button
         onClick={() => {
           previous(accessToken, deviceId, currentTrackInfos);

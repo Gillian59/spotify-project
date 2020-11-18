@@ -1,16 +1,18 @@
 import React from "react";
 import Head from "next/head";
-// import Leftbloc from "../components/LeftBloc";
+import MainContainer from "../components/MainContainer";
 
 type Props = {
   isLoggedIn: boolean;
   spotifyLoginUrl?: string;
+  // tracksList: [];
 };
 
 const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl }) => {
   return (
     <>
-      {/* <Leftbloc /> */}
+      <MainContainer />
+
       <nav>
         <p>
           <a href="/">home</a>
