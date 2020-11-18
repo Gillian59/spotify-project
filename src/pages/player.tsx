@@ -18,7 +18,7 @@ const play = (
   accessToken: string,
   deviceId: string,
   currentTrackInfos: SpotifyTrack | undefined,
-  calculatedTime: number | undefined,
+  positionInMusic: number,
 ) => {
   return fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
@@ -27,7 +27,7 @@ const play = (
     },
     body: JSON.stringify({
       uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
-      position_ms: calculatedTime,
+      position_ms: positionInMusic,
     }),
   });
 };
@@ -74,9 +74,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
-  const [timeStamp1, setTimeStamp1] = React.useState<number | undefined>();
-  const [timeStamp2, setTimeStamp2] = React.useState<number | undefined>();
-  const [calculatedTime, setCalculatedTime] = React.useState<number>(0);
+  const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
 
   React.useEffect(() => {
     const playerStateChanged = (state: SpotifyState) => {
@@ -87,6 +85,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
 
       setCurrentTrack(state.track_window.current_track.name);
       setCurrentTrackInfos(state.track_window.current_track);
+      setPositionInMusic(state.position);
     };
 
     if (player) {
@@ -102,15 +101,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   const user = data;
-
-  const calculateTime = (): number => {
-    if (timeStamp1 && timeStamp2) {
-      const calculated = timeStamp2 - timeStamp1;
-      return calculated;
-    } else {
-      return 0;
-    }
-  };
 
   return (
     <Layout isLoggedIn={true}>
