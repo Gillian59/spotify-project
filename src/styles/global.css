@@ -1,7 +1,7 @@
 @import "Lecteurfooter";
 
 .App {
-  height: calc(100vh - 90px);
+  height: calc(50vh);
   background: lightgray;
 }
 .navBar {
@@ -59,7 +59,44 @@
   color: #fff;
   z-index: 2;
   position: relative;
-  border-top: 1px solid darkgray;
-  color: black;
-  background-color: rgb(138, 138, 138);
+  border-top: 1px solid #040404;
+  color: white;
+  background-color: #040404;
+}
+
+#musicControlsContainer {
+  width: 100%;
+}
+
+#song-and-artiste {
+  padding: 0;
+}
+
+
+#navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #040404;
+  color: white;
+  height: 8vh;
+}
+
+.navbar-items {
+  margin: 0.5rem;
+}
+
+.navbar-items a {
+  color: grey !important;
+}
+
+#spotify-logo-container {
+  height: 2rem;
+  z-index: 2;
+  margin-left: 1.3rem;
+  margin-top: 0.5rem;
+}
+
+#spotify-logo {
+  height: 100%;
 }

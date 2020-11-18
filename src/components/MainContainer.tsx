@@ -1,17 +1,15 @@
 import React from "react";
-import MusicControls from "./MusicControls";
-import Nav from "./Nav";
+import NavSideBar from "./NavSideBar";
 import TracksList from "./TracksList";
 
-const MainContainer: React.FC = () => {
+const MainContainer: React.FC = ({ children }) => {
   return (
     <>
       <div className="App">
-        <Nav />
+        <NavSideBar />
         <TracksList tracksNamesList={["piste 1", "piste 2", "piste 3"]} />
-        {/* <TracksList tracksNamesList={[]} /> */}
       </div>
-      <MusicControls />
+      {children}
     </>
   );
 };
