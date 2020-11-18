@@ -6,9 +6,7 @@ import { Layout } from "../components/Layout";
 import React from "react";
 import { SpotifyState, SpotifyUser, SpotifyTrack } from "../types/spotify";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { Lecteur } from "../components/LecteurFooter";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import MusicControls from "../components/MusicControls";
 
 interface Props {
   user: SpotifyUser;
@@ -133,34 +131,36 @@ const Player: NextPage<Props> = ({ accessToken }) => {
         {positionInMusic} / {currentTrackInfos?.duration_ms}
       </p>
       <p>{calculateInfo}</p>
-      <ProgressBar now={calculateInfo} />
-      <p>nom de la zic : {currentTrack}</p>
+      <MusicControls user={user} accessToken={accessToken}>
+        <ProgressBar now={calculateInfo} />
+        <p>nom de la zic : {currentTrack}</p>
 
-      <h4>{albumTrack}</h4>
-      <img src={albumImg} alt="" />
-      <button
-        onClick={() => {
-          previous(accessToken, deviceId, currentTrackInfos);
-        }}
-      >
-        previous
-      </button>
-      <button
-        onClick={() => {
-          paused
-            ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
-            : (pause(accessToken, deviceId), setIsPlaying(false));
-        }}
-      >
-        {paused ? "play" : "pause"}
-      </button>
-      <button
-        onClick={() => {
-          next(accessToken, deviceId, currentTrackInfos);
-        }}
-      >
-        next
-      </button>
+        <h4>{albumTrack}</h4>
+        <img src={albumImg} alt="" />
+        <button
+          onClick={() => {
+            previous(accessToken, deviceId, currentTrackInfos);
+          }}
+        >
+          previous
+        </button>
+        <button
+          onClick={() => {
+            paused
+              ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
+              : (pause(accessToken, deviceId), setIsPlaying(false));
+          }}
+        >
+          {paused ? "play" : "pause"}
+        </button>
+        <button
+          onClick={() => {
+            next(accessToken, deviceId, currentTrackInfos);
+          }}
+        >
+          next
+        </button>
+      </MusicControls>
     </Layout>
   );
 };
