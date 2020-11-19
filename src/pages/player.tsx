@@ -16,6 +16,8 @@ import { faStepForward, faStepBackward, faRandom } from "@fortawesome/free-solid
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
 
+// faSyncAlt
+
 interface Props {
   user: SpotifyUser;
   accessToken: string;
