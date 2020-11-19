@@ -12,7 +12,7 @@ import MainContainer from "../components/MainContainer";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStepForward, faStepBackward } from "@fortawesome/free-solid-svg-icons";
+import { faStepForward, faStepBackward, faRandom } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
 
@@ -48,28 +48,33 @@ const pause = (accessToken: string, deviceId: string) => {
   });
 };
 
-const next = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyTrack | undefined) => {
+const shuffle = (accessToken: string, isShuffle: boolean) => {
+  return fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${isShuffle}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+const next = (accessToken: string, deviceId: string) => {
   return fetch(`https://api.spotify.com/v1/me/player/next?device_id=${deviceId}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({
-      uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
-    }),
   });
 };
-const previous = (accessToken: string, deviceId: string, currentTrackInfos: SpotifyTrack | undefined) => {
+
+const previous = (accessToken: string, deviceId: string) => {
   return fetch(`https://api.spotify.com/v1/me/player/previous?device_id=${deviceId}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({
-      uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
-    }),
   });
 };
+
 const getAlbumTracks = async (accessToken: string, id: string) => {
   return await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
     method: "GET",
@@ -90,11 +95,11 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+  const [isShuffle, setIsShuffle] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
       const { items: tracks } = await response.json();
-      console.log(tracks);
       const formatedTracks = tracks.map((track: TracksListItem) => {
         return {
           id: track.id,
@@ -104,7 +109,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
           artists: track.artists,
         };
       });
-      console.log("PPPPPPPPPP", formatedTracks);
       setTracksList(formatedTracks);
     });
 
@@ -115,6 +119,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       // setAlbumImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
       setPositionInMusic(state.position);
+      setIsShuffle(state.shuffle);
     };
 
     if (player) {
@@ -128,11 +133,15 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   }, [player]);
 
   React.useEffect(() => {
-    isPlaying &&
+    !paused &&
       currentTrackInfos &&
+      // currentTrackInfos.name === currentTrack &&
       positionInMusic <= currentTrackInfos.duration_ms &&
-      setTimeout(() => setPositionInMusic(positionInMusic + 1000), 1000);
-  }, [positionInMusic, isPlaying]);
+      setTimeout(() => {
+        console.log(positionInMusic);
+        setPositionInMusic(positionInMusic + 1000);
+      }, 1000);
+  }, [positionInMusic, paused, currentTrackInfos]);
 
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
@@ -165,7 +174,15 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                 <button
                   className="lecteur-btn"
                   onClick={() => {
-                    previous(accessToken, deviceId, currentTrackInfos);
+                    setIsShuffle(!isShuffle), shuffle(accessToken, deviceId, isShuffle);
+                  }}
+                >
+                  <FontAwesomeIcon className="icon" icon={faRandom} />
+                </button>
+                <button
+                  className="lecteur-btn"
+                  onClick={() => {
+                    previous(accessToken, deviceId);
                   }}
                 >
                   <FontAwesomeIcon className="icon" icon={faStepBackward} />
@@ -187,7 +204,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                 <button
                   className="lecteur-btn"
                   onClick={() => {
-                    next(accessToken, deviceId, currentTrackInfos);
+                    next(accessToken, deviceId);
                   }}
                 >
                   <FontAwesomeIcon className="icon" icon={faStepForward} />

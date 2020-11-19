@@ -6,7 +6,6 @@ type TracksListProps = {
 };
 
 const TracksList: React.FC<TracksListProps> = ({ tracksList }) => {
-  console.log("TrackNAMELIST @@@@@", tracksList);
   return (
     <div className="tracksList">
       <ul>
