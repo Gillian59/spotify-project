@@ -44,15 +44,17 @@
 }
 
 .pictureAlbum {
-  background-color: rgb(138, 138, 138);
   color: #ddd;
-  border: 1px solid white;
   text-align: center;
   align-items: center;
   width: 100%;
-  height: 260px;
+  height: 188px;
   margin-block-start: auto;
   margin-bottom: 12px;
+}
+
+#songImg {
+  width: 100%;
 }
 
 .musicControls {
@@ -95,7 +97,6 @@
   margin-left: 1rem;
   overflow: hidden;
 }
-
 
 #navbar {
   display: flex;
@@ -187,11 +188,11 @@
 }
 
 .icon {
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 .icon:hover {
-  color: #E4E4E4;
+  color: #e4e4e4;
   transform: scale(1.05);
 }
 
@@ -202,13 +203,30 @@
   justify-content: center;
 }
 
+#repeat-0 .icon {
+  color: #cccccc;
+}
 
+#repeat-1 .icon {
+  color: #299149;
+}
 
+#repeat-2 {
+  color: #299149;
+}
+
+#repeat-2:after {
+  color: #299149;
+  content: "1";
+}
 
 .tracksList {
-  width: -webkit-fill-available;	  width: -webkit-fill-available;
-  background-color: brown;	  background: linear-gradient(to top, rgb(0, 0, 0), rgba(255, 255, 255, 0.192));
-  overflow: scroll;	  overflow: scroll;
+  width: -webkit-fill-available;
+  width: -webkit-fill-available;
+  background-color: brown;
+  background: linear-gradient(to top, rgb(0, 0, 0), rgba(255, 255, 255, 0.192));
+  overflow: scroll;
+  overflow: scroll;
 }
 
 table {

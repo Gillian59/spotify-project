@@ -7,7 +7,7 @@ type TracksListProps = {
 };
 
 const TracksList: React.FC<TracksListProps> = ({ tracksList, albumImg }) => {
-  console.log("je veux voir ca ici:", albumImg.images[0].url);
+  //console.log("je veux voir ca ici:", albumImg.images[0].url);
   // console.log("TrackNAMELIST @@@@@", tracksList);
 
   const styles = {

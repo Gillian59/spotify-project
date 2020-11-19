@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const NavSideBar = () => {
+const NavSideBar = (songImg: string) => {
   const router = useRouter();
   const styles = {
     homelogo: {
@@ -22,6 +22,8 @@ const NavSideBar = () => {
       color: "#FFF",
     },
   };
+  console.log("songImg", songImg);
+
   return (
     <div className="navBar">
       <ul>
@@ -38,7 +40,9 @@ const NavSideBar = () => {
           <li style={router.pathname === "/radio" ? styles.active : styles.link}>Radio</li>
         </Link>
       </ul>
-      <div className="pictureAlbum">image album</div>
+      <div className="pictureAlbum">
+        <img id="songImg" src={songImg.songImg} alt="La photo de l'album ici" />
+      </div>
     </div>
   );
 };
