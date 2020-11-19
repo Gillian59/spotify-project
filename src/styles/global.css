@@ -202,8 +202,27 @@
   justify-content: center;
 }
 
-.tracksList{
-  width: -webkit-fill-available;
-  background-color: brown;
-  overflow: scroll;
+
+
+
+.tracksList {
+  width: -webkit-fill-available;	  width: -webkit-fill-available;
+  background-color: brown;	  background: linear-gradient(to top, rgb(0, 0, 0), rgba(255, 255, 255, 0.192));
+  overflow: scroll;	  overflow: scroll;
+}
+
+table {
+  text-align: center;
+}
+th,
+td {
+  color: rgb(255, 255, 255);
+  font-size: xx-large;
+  padding: 15px;
+  background-color: #70707000;
+}
+.topBarPlaylist {
+  display: flex;
+  height: 300px;
+  /* background-color: aquamarine; */
 }
