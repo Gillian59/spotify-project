@@ -49,6 +49,7 @@ const pause = (accessToken: string, deviceId: string) => {
 };
 
 const shuffle = (accessToken: string, isShuffle: boolean) => {
+  isShuffle = !isShuffle;
   return fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${isShuffle}`, {
     method: "PUT",
     headers: {
@@ -94,7 +95,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
-  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [isShuffle, setIsShuffle] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -133,14 +133,18 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   }, [player]);
 
   React.useEffect(() => {
-    !paused &&
-      currentTrackInfos &&
-      // currentTrackInfos.name === currentTrack &&
-      positionInMusic <= currentTrackInfos.duration_ms &&
-      setTimeout(() => {
+    let handler: NodeJS.Timeout;
+    if (!paused && currentTrackInfos && positionInMusic <= currentTrackInfos.duration_ms) {
+      handler = setTimeout(() => {
         console.log(positionInMusic);
         setPositionInMusic(positionInMusic + 1000);
       }, 1000);
+    }
+    return () => {
+      if (handler) {
+        clearTimeout(handler);
+      }
+    };
   }, [positionInMusic, paused, currentTrackInfos]);
 
   if (error) return <div>failed to load</div>;
@@ -163,18 +167,18 @@ const Player: NextPage<Props> = ({ accessToken }) => {
         </div>
         <MusicControls>
           <Row id="musicControlsContainer">
-            <Col md={3} id="song-and-artiste">
+            <Col md={2} id="song-and-artiste">
               <small className="track-text-info">{currentTrack}</small>
               <small className="track-text-info">{artisteName}</small>
             </Col>
-
+            <Col md={1}></Col>
             <Col md={6} id="progress-bar-and-buttons">
               {/* <img src={albumImg} alt={albumImg} /> */}
               <div id="lecteur-buttons">
                 <button
-                  className="lecteur-btn"
+                  id={isShuffle ? "shuffle-btn-on" : "shuffle-btn-off"}
                   onClick={() => {
-                    setIsShuffle(!isShuffle), shuffle(accessToken, deviceId, isShuffle);
+                    shuffle(accessToken, isShuffle);
                   }}
                 >
                   <FontAwesomeIcon className="icon" icon={faRandom} />
@@ -191,8 +195,8 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                   id="lecteur-btn-play-pause"
                   onClick={() => {
                     paused
-                      ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
-                      : (pause(accessToken, deviceId), setIsPlaying(false));
+                      ? play(accessToken, deviceId, currentTrackInfos, positionInMusic)
+                      : pause(accessToken, deviceId);
                   }}
                 >
                   {paused ? (

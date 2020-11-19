@@ -73,7 +73,10 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  height: 10vh;
+  overflow: hidden;
   justify-content: center;
+  box-sizing: content-box;
 }
 
 #progress-bar-and-buttons {
@@ -119,6 +122,22 @@
   margin-bottom: 0.4rem;
   background-color: transparent;
   border: none;
+}
+
+#shuffle-btn-on {
+  margin-bottom: 0.4rem;
+  background-color: transparent;
+  border: none;
+}
+
+#shuffle-btn-off {
+  margin-bottom: 0.4rem;
+  background-color: transparent;
+  border: none;
+}
+
+#shuffle-btn-on .icon {
+  color: white;
 }
 
 .lecteur-btn:focus {
