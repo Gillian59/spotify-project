@@ -1,6 +1,6 @@
 @import "Lecteurfooter";
 
-.App {
+.MainContainer {
   height: calc(50vh);
   background: lightgray;
 }

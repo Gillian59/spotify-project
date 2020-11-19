@@ -14,6 +14,7 @@ import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStepForward, faStepBackward } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import NavSideBar from "../components/NavSideBar";
 
 interface Props {
   user: SpotifyUser;
@@ -147,9 +148,10 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   return (
     <Layout isLoggedIn={true}>
       <MainContainer>
-        <TracksList tracksList={tracksList} />
-        {/* <TracksList tracksNamesList={["piste 1", "piste 2", "piste 3"]} /> */}
-        {console.log(tracksList)}
+        <div className="MainContainer">
+          <NavSideBar />
+          <TracksList tracksList={tracksList} />
+        </div>
         <MusicControls>
           <Row id="musicControlsContainer">
             <Col md={3} id="song-and-artiste">

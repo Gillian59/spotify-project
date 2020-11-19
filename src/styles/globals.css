@@ -1,8 +1,9 @@
-.App {
+.MainContainer {
   height: 81vh;
   display: flex;
   background: lightgray;
 }
+
 .navBar {
   width: 260px;
   height: 100%;
@@ -68,4 +69,5 @@
 .tracksList{
   width: -webkit-fill-available;
   background-color: brown;
+  overflow: scroll;
 }
