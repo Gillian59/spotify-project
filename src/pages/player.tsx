@@ -11,6 +11,10 @@ import MusicControls from "../components/MusicControls";
 import MainContainer from "../components/MainContainer";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStepForward, faStepBackward } from "@fortawesome/free-solid-svg-icons";
+import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import NavSideBar from "../components/NavSideBar";
 
 interface Props {
   user: SpotifyUser;
@@ -135,45 +139,67 @@ const Player: NextPage<Props> = ({ accessToken }) => {
 
   const calculateInfo = (positionInMusic / (currentTrackInfos ? currentTrackInfos.duration_ms : 1)) * 100;
 
+  const showTime = (time: number) => {
+    const minutes = Math.floor(time / 60000);
+    const seconds = parseInt(((time % 60000) / 1000).toFixed(0));
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   return (
     <Layout isLoggedIn={true}>
       <MainContainer>
-        <TracksList tracksList={tracksList} />
-        {/* <TracksList tracksNamesList={["piste 1", "piste 2", "piste 3"]} /> */}
-        {console.log(tracksList)}
+        <div className="MainContainer">
+          <NavSideBar />
+          <TracksList tracksList={tracksList} />
+        </div>
         <MusicControls>
           <Row id="musicControlsContainer">
-            <Col md={2} id="song-and-artiste">
-              <small>{currentTrack}</small>
-              <small>{artisteName}</small>
+            <Col md={3} id="song-and-artiste">
+              <small className="track-text-info">{currentTrack}</small>
+              <small className="track-text-info">{artisteName}</small>
             </Col>
-            <Col md={8}>
+
+            <Col md={6} id="progress-bar-and-buttons">
               {/* <img src={albumImg} alt={albumImg} /> */}
-              <button
-                onClick={() => {
-                  previous(accessToken, deviceId, currentTrackInfos);
-                }}
-              >
-                previous
-              </button>
-              <button
-                onClick={() => {
-                  paused
-                    ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
-                    : (pause(accessToken, deviceId), setIsPlaying(false));
-                }}
-              >
-                {paused ? "play" : "pause"}
-              </button>
-              <button
-                onClick={() => {
-                  next(accessToken, deviceId, currentTrackInfos);
-                }}
-              >
-                next
-              </button>
-              <ProgressBar now={calculateInfo} />
+              <div id="lecteur-buttons">
+                <button
+                  className="lecteur-btn"
+                  onClick={() => {
+                    previous(accessToken, deviceId, currentTrackInfos);
+                  }}
+                >
+                  <FontAwesomeIcon className="icon" icon={faStepBackward} />
+                </button>
+                <button
+                  id="lecteur-btn-play-pause"
+                  onClick={() => {
+                    paused
+                      ? (play(accessToken, deviceId, currentTrackInfos, positionInMusic), setIsPlaying(true))
+                      : (pause(accessToken, deviceId), setIsPlaying(false));
+                  }}
+                >
+                  {paused ? (
+                    <FontAwesomeIcon className="icon" icon={faPlayCircle} size={"2x"} />
+                  ) : (
+                    <FontAwesomeIcon className="icon" icon={faPauseCircle} size={"2x"} />
+                  )}
+                </button>
+                <button
+                  className="lecteur-btn"
+                  onClick={() => {
+                    next(accessToken, deviceId, currentTrackInfos);
+                  }}
+                >
+                  <FontAwesomeIcon className="icon" icon={faStepForward} />
+                </button>
+              </div>
+              <Row id="progress-container">
+                <small>{showTime(positionInMusic)}</small>
+                <ProgressBar now={calculateInfo} id="progress-bar" />
+                <small>{showTime(currentTrackInfos ? currentTrackInfos.duration_ms : 1)}</small>
+              </Row>
             </Col>
+            <Col md={3} />
           </Row>
         </MusicControls>
       </MainContainer>
