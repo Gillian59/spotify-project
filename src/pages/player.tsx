@@ -71,13 +71,29 @@ const previous = (accessToken: string, deviceId: string, currentTrackInfos: Spot
   });
 };
 const getAlbumTracks = async (accessToken: string, id: string) => {
-  return await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  return Promise.all([
+    fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }),
+    fetch(`https://api.spotify.com/v1/albums/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }),
+  ]);
 };
+// const getAlbumTracks = async (accessToken: string, id: string) => {
+//   return await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${accessToken}`,
+//     },
+//   });
+// };
 
 const Player: NextPage<Props> = ({ accessToken }) => {
   const { data, error } = useSWR("/api/get-user-info");
@@ -85,16 +101,18 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [artisteName, setArtisteName] = React.useState("");
   const [tracksList, setTracksList] = React.useState([]);
-  // const [albumImg, setAlbumImg] = React.useState("");
+  const [albumImg, setAlbumImg] = React.useState<SpotifyTrack>();
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (response) => {
-      const { items: tracks } = await response.json();
-      console.log(tracks);
+    getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async (/*response1*/ [response1, response2]) => {
+      const { items: tracks } = await response1.json();
+      const album = await response2.json();
+      console.log("tracks ici", tracks);
+      console.log("album ici", album.images[0].url);
       const formatedTracks = tracks.map((track: TracksListItem) => {
         return {
           id: track.id,
@@ -104,8 +122,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
           artists: track.artists,
         };
       });
-      console.log("PPPPPPPPPP", formatedTracks);
+      // console.log("PPPPPPPPPP", formatedTracks);
       setTracksList(formatedTracks);
+      setAlbumImg(album);
     });
 
     const playerStateChanged = (state: SpotifyState) => {
@@ -150,7 +169,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <MainContainer>
         <div className="MainContainer">
           <NavSideBar />
-          <TracksList tracksList={tracksList} />
+          <TracksList tracksList={tracksList} albumImg={albumImg} />
         </div>
         <MusicControls>
           <Row id="musicControlsContainer">
