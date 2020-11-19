@@ -124,10 +124,20 @@
   border: none;
 }
 
+.lecteur-btn:focus {
+  text-decoration: none;
+  outline: none !important;
+}
+
 #shuffle-btn-on {
   margin-bottom: 0.4rem;
   background-color: transparent;
   border: none;
+}
+
+#shuffle-btn-on:focus {
+  text-decoration: none;
+  outline: none !important;
 }
 
 #shuffle-btn-off {
@@ -136,13 +146,13 @@
   border: none;
 }
 
-#shuffle-btn-on .icon {
-  color: white;
-}
-
-.lecteur-btn:focus {
+#shuffle-btn-off:focus {
   text-decoration: none;
   outline: none !important;
+}
+
+#shuffle-btn-on .icon {
+  color: #299149;
 }
 
 #lecteur-btn-play-pause {
