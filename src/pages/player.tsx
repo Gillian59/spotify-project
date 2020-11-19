@@ -12,11 +12,9 @@ import MainContainer from "../components/MainContainer";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStepForward, faStepBackward, faRandom } from "@fortawesome/free-solid-svg-icons";
+import { faStepForward, faStepBackward, faRandom, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
-
-// faSyncAlt
 
 interface Props {
   user: SpotifyUser;
@@ -53,6 +51,16 @@ const pause = (accessToken: string, deviceId: string) => {
 const shuffle = (accessToken: string, isShuffle: boolean) => {
   isShuffle = !isShuffle;
   return fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${isShuffle}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+const repeat = (accessToken: string, repeatMod: string) => {
+  console.log(repeatMod);
+  return fetch(`https://api.spotify.com/v1/me/player/repeat?state=${repeatMod}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -102,10 +110,13 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [artisteName, setArtisteName] = React.useState("");
   const [tracksList, setTracksList] = React.useState([]);
   const [albumImg, setAlbumImg] = React.useState<SpotifyTrack>();
+  const [songImg, setSongImg] = React.useState<string>();
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
   const [isShuffle, setIsShuffle] = React.useState<boolean>(false);
+  const [repeatMod, setRepeatMod] = React.useState<string>("off");
+  const [repeatCode, setRepeatCode] = React.useState<number>();
 
   React.useEffect(() => {
     getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async ([response1, response2]) => {
@@ -131,9 +142,11 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       setCurrentTrack(state.track_window.current_track.name);
       setArtisteName(state.track_window.current_track.artists[0].name);
       // setAlbumImg(state.track_window.current_track.album.images[0].url);
+      setSongImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
       setPositionInMusic(state.position);
       setIsShuffle(state.shuffle);
+      setRepeatCode(state.repeat_mode);
     };
 
     if (player) {
@@ -172,11 +185,24 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  const sendRepeatMod = () => {
+    if (repeatMod === "off") {
+      setRepeatMod("context");
+    } else if (repeatMod === "context") {
+      setRepeatMod("track");
+    } else {
+      setRepeatMod("off");
+    }
+    repeat(accessToken, repeatMod);
+  };
+  console.log("repeatMod", repeatMod);
+  console.log("repeatCode", repeatCode);
+
   return (
     <Layout isLoggedIn={true}>
       <MainContainer>
         <div className="MainContainer">
-          <NavSideBar />
+          <NavSideBar songImg={songImg} />
           <TracksList tracksList={tracksList} albumImg={albumImg} />
         </div>
         <MusicControls>
@@ -187,7 +213,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
             </Col>
             <Col md={1}></Col>
             <Col md={6} id="progress-bar-and-buttons">
-              {/* <img src={albumImg} alt={albumImg} /> */}
               <div id="lecteur-buttons">
                 <button
                   id={isShuffle ? "shuffle-btn-on" : "shuffle-btn-off"}
@@ -226,6 +251,16 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                   }}
                 >
                   <FontAwesomeIcon className="icon" icon={faStepForward} />
+                </button>
+
+                <button
+                  className="lecteur-btn"
+                  id={`repeat-${repeatCode}`}
+                  onClick={() => {
+                    sendRepeatMod();
+                  }}
+                >
+                  <FontAwesomeIcon className="icon" icon={faSyncAlt} />
                 </button>
               </div>
               <Row id="progress-container">
