@@ -269,3 +269,7 @@ td {
 .IconNavSideBar .icon {
   margin-right: 15px;
 }
+
+.UserName:hover {
+  text-decoration: none;
+}

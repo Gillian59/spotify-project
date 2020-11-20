@@ -89,10 +89,8 @@ export type Artist = {
 };
 
 export interface Albums {
-  albumImg: {
-    images: {
-      url: string;
-    }[];
-    name: string;
-  };
+  images: {
+    url: string;
+  }[];
+  name: string;
 }
