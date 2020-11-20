@@ -26,7 +26,6 @@ const NavSideBar: React.FC<NavSideBarProps> = ({ songImg }) => {
       color: "#FFF",
     },
   };
-  console.log("songImg", songImg);
 
   return (
     <div className="navBar">

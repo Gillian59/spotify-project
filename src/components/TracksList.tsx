@@ -27,6 +27,8 @@ const TracksList: React.FC = (props) => {
       justifyContent: "space-evenly",
     },
   };
+  console.log(albumImg);
+
   return (
     <>
       <div className="tracksList">
