@@ -1,5 +1,3 @@
-@import "Lecteurfooter";
-
 .MainContainer {
   height: 81vh;
   display: flex;
@@ -252,4 +250,7 @@ td {
   display: flex;
   height: 300px;
   /* background-color: aquamarine; */
+}
+.UserName {
+  margin-right: 20px;
 }
