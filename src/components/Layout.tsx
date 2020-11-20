@@ -5,10 +5,11 @@ import Link from "next/link";
 type Props = {
   isLoggedIn: boolean;
   spotifyLoginUrl?: string;
+  UserName: string;
   // tracksList: [];
 };
 
-const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl }) => {
+export const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl, UserName }) => {
   return (
     <>
       <nav id="navbar">
@@ -20,6 +21,7 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl }) => {
         {isLoggedIn ? (
           <>
             <p className="navbar-items">
+              <a className="UserName">{UserName}</a>
               <a href="/api/logout">logout</a>
             </p>
           </>
@@ -33,14 +35,14 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl }) => {
   );
 };
 
-export const Layout: React.FC<Props> = ({ children, isLoggedIn, spotifyLoginUrl }) => {
+export const Layout: React.FC<Props> = ({ children, isLoggedIn, spotifyLoginUrl, UserName }) => {
   return (
     <>
       <Head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <NavBar isLoggedIn={isLoggedIn} spotifyLoginUrl={spotifyLoginUrl} />
+      <NavBar isLoggedIn={isLoggedIn} spotifyLoginUrl={spotifyLoginUrl} UserName={UserName} />
       <main>{children}</main>
     </>
   );

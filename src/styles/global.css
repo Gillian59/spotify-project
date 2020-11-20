@@ -1,5 +1,3 @@
-@import "Lecteurfooter";
-
 .MainContainer {
   height: 81vh;
   display: flex;
@@ -255,7 +253,7 @@ table {
 th,
 td {
   color: rgb(255, 255, 255);
-  font-size: xx-large;
+  font-size: large;
   padding: 15px;
   background-color: #70707000;
 }
@@ -263,4 +261,7 @@ td {
   display: flex;
   height: 300px;
   /* background-color: aquamarine; */
+}
+.UserName {
+  margin-right: 20px;
 }

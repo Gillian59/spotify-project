@@ -15,7 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStepForward, faStepBackward, faRandom, faSyncAlt, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
-
+import { userInfo } from "os";
+import { getDisplayName } from "next/dist/next-server/lib/utils";
 interface Props {
   user: SpotifyUser;
   accessToken: string;
@@ -213,6 +214,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     }
     repeat(accessToken, repeatMod);
   };
+  console.log("poopopoooooooooo", data.display_name);
 
   const setVolumeFromState = (value: number) => {
     if (volumeInput != 0 && volumeInput != 100) {
@@ -222,7 +224,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   };
 
   return (
-    <Layout isLoggedIn={true}>
+    <Layout isLoggedIn={true} UserName={data.display_name}>
       <MainContainer>
         <div className="MainContainer">
           <NavSideBar songImg={songImg} />
