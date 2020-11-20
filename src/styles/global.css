@@ -253,4 +253,8 @@ td {
 }
 .UserName {
   margin-right: 20px;
+  margin-left: 10px;
+}
+.IconNavSideBar .icon {
+  margin-right: 15px;
 }

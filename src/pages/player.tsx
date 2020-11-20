@@ -15,8 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStepForward, faStepBackward, faRandom, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
-import { userInfo } from "os";
-import { getDisplayName } from "next/dist/next-server/lib/utils";
+
 interface Props {
   user: SpotifyUser;
   accessToken: string;
