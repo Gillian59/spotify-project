@@ -1,6 +1,8 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   isLoggedIn: boolean;
@@ -21,6 +23,7 @@ export const NavBar: React.FC<Props> = ({ isLoggedIn, spotifyLoginUrl, UserName 
         {isLoggedIn ? (
           <>
             <p className="navbar-items">
+              <FontAwesomeIcon className="icon" icon={faUser} size={"1x"} />
               <a className="UserName">{UserName}</a>
               <a href="/api/logout">logout</a>
             </p>

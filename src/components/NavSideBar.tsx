@@ -1,6 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faSearch, faBroadcastTower } from "@fortawesome/free-solid-svg-icons";
 
 type NavSideBarProps = {
   songImg: string;
@@ -31,16 +33,22 @@ const NavSideBar: React.FC<NavSideBarProps> = ({ songImg }) => {
     <div className="navBar">
       <ul>
         <Link href="/" passHref>
-          <li style={router.pathname === "/" ? styles.active : styles.link}>
-            {/* <img src="homeLogo.jpg" alt="HomeLogo" /> */}
+          <li style={router.pathname === "/" ? styles.active : styles.link} className="IconNavSideBar">
+            <FontAwesomeIcon className="icon" icon={faHome} size={"1x"} />
             Accueil
           </li>
         </Link>
         <Link href="/parcourir" passHref>
-          <li style={router.pathname === "/parcourir" ? styles.active : styles.link}>Parcourir</li>
+          <li style={router.pathname === "/parcourir" ? styles.active : styles.link} className="IconNavSideBar">
+            <FontAwesomeIcon className="icon" icon={faSearch} size={"1x"} />
+            Parcourir
+          </li>
         </Link>
         <Link href="/radio" passHref>
-          <li style={router.pathname === "/radio" ? styles.active : styles.link}>Radio</li>
+          <li style={router.pathname === "/radio" ? styles.active : styles.link} className="IconNavSideBar">
+            <FontAwesomeIcon className="icon" icon={faBroadcastTower} size={"1x"} />
+            Radio
+          </li>
         </Link>
       </ul>
       <div className="pictureAlbum">
