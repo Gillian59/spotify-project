@@ -1,23 +1,17 @@
 import React from "react";
-import { SpotifyTrack, TracksListItem } from "../types/spotify";
+import { Albums, TracksListItem } from "../types/spotify";
 
-type TracksListProps = {
-  tracksList: TracksListItem[];
-  albumImg: SpotifyTrack | undefined;
-};
-
-const TracksList: React.FC<TracksListProps> = ({ tracksList, albumImg }) => {
-  //console.log("je veux voir ca ici:", albumImg.images[0].url);
-  // console.log("TrackNAMELIST @@@@@", tracksList);
-
+const TracksList: React.FC = (props) => {
+  const { tracksList } = props as TracksListItem;
+  const { albumImg } = props as Albums;
   const styles = {
     main: {
       border: "2px solid black",
-      textAlign: "center",
+      textAlign: "center" as const,
     },
     global: { width: "-webkit-fill-available" },
     titre: {
-      textAlign: "center",
+      textAlign: "center" as const,
       fontSize: "3vh",
     },
     topBarImg: {
@@ -70,18 +64,3 @@ const TracksList: React.FC<TracksListProps> = ({ tracksList, albumImg }) => {
 };
 
 export default TracksList;
-// <!-- Tableau simple avec en-tête -->
-// <table>
-//   <tr>
-//     <th>Prénom</th>
-//     <th>Nom</th>
-//   </tr>
-//   <tr>
-//     <td>Jean</td>
-//     <td>Dupont</td>
-//   </tr>
-//   <tr>
-//     <td>Marion</td>
-//     <td>Duval</td>
-//   </tr>
-// </table>

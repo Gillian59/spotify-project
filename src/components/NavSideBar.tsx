@@ -2,7 +2,11 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const NavSideBar = (songImg: string) => {
+type NavSideBarProps = {
+  songImg: string;
+};
+
+const NavSideBar: React.FC<NavSideBarProps> = ({ songImg }) => {
   const router = useRouter();
   const styles = {
     homelogo: {
@@ -41,7 +45,7 @@ const NavSideBar = (songImg: string) => {
         </Link>
       </ul>
       <div className="pictureAlbum">
-        <img id="songImg" src={songImg.songImg} alt="La photo de l'album ici" />
+        <img id="songImg" src={songImg} alt="La photo de l'album ici" />
       </div>
     </div>
   );

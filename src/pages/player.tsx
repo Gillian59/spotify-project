@@ -4,7 +4,7 @@ import Cookies from "cookies";
 import useSWR from "swr";
 import { Layout } from "../components/Layout";
 import React from "react";
-import { SpotifyState, SpotifyUser, SpotifyTrack, TracksListItem } from "../types/spotify";
+import { SpotifyState, SpotifyUser, SpotifyTrack, TracksListItem, Albums } from "../types/spotify";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import TracksList from "../components/TracksList";
 import MusicControls from "../components/MusicControls";
@@ -109,8 +109,8 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [currentTrack, setCurrentTrack] = React.useState("");
   const [artisteName, setArtisteName] = React.useState("");
   const [tracksList, setTracksList] = React.useState([]);
-  const [albumImg, setAlbumImg] = React.useState<SpotifyTrack>();
-  const [songImg, setSongImg] = React.useState<string>();
+  const [albumImg, setAlbumImg] = React.useState<Albums>();
+  const [songImg, setSongImg] = React.useState<string>("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
   const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
@@ -203,7 +203,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <MainContainer>
         <div className="MainContainer">
           <NavSideBar songImg={songImg} />
-          <TracksList tracksList={tracksList} albumImg={albumImg} />
+          <TracksList tracksList={tracksList ? tracksList : undefined} albumImg={albumImg ? albumImg : undefined} />
         </div>
         <MusicControls>
           <Row id="musicControlsContainer">
