@@ -59,7 +59,6 @@ const shuffle = (accessToken: string, isShuffle: boolean) => {
 };
 
 const repeat = (accessToken: string, repeatMod: string) => {
-  console.log(repeatMod);
   return fetch(`https://api.spotify.com/v1/me/player/repeat?state=${repeatMod}`, {
     method: "PUT",
     headers: {
@@ -117,26 +116,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [isShuffle, setIsShuffle] = React.useState<boolean>(false);
   const [repeatMod, setRepeatMod] = React.useState<string>("off");
   const [repeatCode, setRepeatCode] = React.useState<number>();
+  const [albumId, setAlbumId] = React.useState<string>("6akEvsycLGftJxYudPjmqK");
 
   React.useEffect(() => {
-    getAlbumTracks(accessToken, "6akEvsycLGftJxYudPjmqK").then(async ([response1, response2]) => {
-      const { items: tracks } = await response1.json();
-      const album = await response2.json();
-      console.log("tracks ici", tracks);
-      console.log("album ici", album.images[0].url);
-      const formatedTracks = tracks.map((track: TracksListItem) => {
-        return {
-          id: track.id,
-          name: track.name,
-          track_number: track.track_number,
-          href: track.href,
-          artists: track.artists,
-        };
-      });
-      setTracksList(formatedTracks);
-      setAlbumImg(album);
-    });
-
     const playerStateChanged = (state: SpotifyState) => {
       setPaused(state.paused);
       setCurrentTrack(state.track_window.current_track.name);
@@ -147,6 +129,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       setPositionInMusic(state.position);
       setIsShuffle(state.shuffle);
       setRepeatCode(state.repeat_mode);
+      setAlbumId(state.track_window.current_track.album.uri.split(":")[2]);
     };
 
     if (player) {
@@ -160,10 +143,27 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   }, [player]);
 
   React.useEffect(() => {
+    getAlbumTracks(accessToken, albumId).then(async ([response1, response2]) => {
+      const { items: tracks } = await response1.json();
+      const album = await response2.json();
+      const formatedTracks = tracks.map((track: TracksListItem) => {
+        return {
+          id: track.id,
+          name: track.name,
+          track_number: track.track_number,
+          href: track.href,
+          artists: track.artists,
+        };
+      });
+      setTracksList(formatedTracks);
+      setAlbumImg(album);
+    });
+  }, [albumId]);
+
+  React.useEffect(() => {
     let handler: NodeJS.Timeout;
     if (!paused && currentTrackInfos && positionInMusic <= currentTrackInfos.duration_ms) {
       handler = setTimeout(() => {
-        console.log(positionInMusic);
         setPositionInMusic(positionInMusic + 1000);
       }, 1000);
     }
@@ -195,8 +195,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     }
     repeat(accessToken, repeatMod);
   };
-  console.log("repeatMod", repeatMod);
-  console.log("repeatCode", repeatCode);
 
   return (
     <Layout isLoggedIn={true}>
