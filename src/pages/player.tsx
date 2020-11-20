@@ -235,7 +235,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
               <small className="track-text-info">{artisteName}</small>
             </Col>
             <Col md={1}></Col>
-            <Col md={7} id="progress-bar-and-buttons">
+            <Col md={6} id="progress-bar-and-buttons">
               <div id="lecteur-buttons">
                 <button
                   id={isShuffle ? "shuffle-btn-on" : "shuffle-btn-off"}
@@ -292,8 +292,9 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                 <small>{showTime(currentTrackInfos ? currentTrackInfos.duration_ms : 1)}</small>
               </Row>
             </Col>
-            <Col md={2} id="song-and-artiste">
-              <Row>
+            <Col md={1} />
+            <Col md={2}>
+              <Row id="sound-buttons">
                 <button
                   className="lecteur-btn"
                   onClick={() => {
