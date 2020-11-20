@@ -15,26 +15,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStepForward, faStepBackward, faRandom, faSyncAlt, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
-import { userInfo } from "os";
-import { getDisplayName } from "next/dist/next-server/lib/utils";
+
 interface Props {
   user: SpotifyUser;
   accessToken: string;
 }
 
-const play = (
+export const play = (
   accessToken: string,
   deviceId: string,
-  currentTrackInfos: SpotifyTrack | undefined,
+  currentTrackId: string,
   positionInMusic: number,
-) => {
+): Promise<Response> => {
   return fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      uris: [`spotify:track:${currentTrackInfos ? currentTrackInfos.id : "1lCRw5FEZ1gPDNPzy1K4zW"}`],
+      uris: [`spotify:track:${currentTrackId}`],
       position_ms: positionInMusic,
     }),
   });
@@ -116,12 +115,13 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const { data, error } = useSWR("/api/get-user-info");
   const [paused, setPaused] = React.useState(false);
   const [currentTrack, setCurrentTrack] = React.useState("");
+  const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
+  const [currentTrackId, setCurrentTrackId] = React.useState<string>("1lCRw5FEZ1gPDNPzy1K4zW");
   const [artisteName, setArtisteName] = React.useState("");
   const [tracksList, setTracksList] = React.useState([]);
   const [albumImg, setAlbumImg] = React.useState<Albums>();
   const [songImg, setSongImg] = React.useState<string>("");
   const [deviceId, player] = useSpotifyPlayer(accessToken);
-  const [currentTrackInfos, setCurrentTrackInfos] = React.useState<SpotifyTrack>();
   const [positionInMusic, setPositionInMusic] = React.useState<number>(0);
   const [isShuffle, setIsShuffle] = React.useState<boolean>(false);
   const [repeatMod, setRepeatMod] = React.useState<string>("off");
@@ -137,6 +137,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       // setAlbumImg(state.track_window.current_track.album.images[0].url);
       setSongImg(state.track_window.current_track.album.images[0].url);
       setCurrentTrackInfos(state.track_window.current_track);
+      setCurrentTrackId(state.track_window.current_track.id);
       setPositionInMusic(state.position);
       setIsShuffle(state.shuffle);
       setRepeatCode(state.repeat_mode);
@@ -170,14 +171,6 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       setAlbumImg(album);
     });
   }, [albumId]);
-
-  // React.useEffect(() => {
-  //   player &&
-  //     player.getVolume().then((volume: number) => {
-  //       const volume_percentage = volume * 100;
-  //       setVolumeInput(volume_percentage);
-  //     });
-  // }, [volumeInput]);
 
   React.useEffect(() => {
     let handler: NodeJS.Timeout;
@@ -228,7 +221,14 @@ const Player: NextPage<Props> = ({ accessToken }) => {
       <MainContainer>
         <div className="MainContainer">
           <NavSideBar songImg={songImg} />
-          <TracksList tracksList={tracksList ? tracksList : undefined} albumImg={albumImg ? albumImg : undefined} />
+          <TracksList
+            accessToken={accessToken}
+            deviceId={deviceId}
+            currentTrackId={currentTrackId}
+            positionInMusic={positionInMusic}
+            tracksList={tracksList ? tracksList : undefined}
+            albumImg={albumImg ? albumImg : undefined}
+          />
         </div>
         <MusicControls>
           <Row id="musicControlsContainer">
@@ -259,7 +259,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                   id="lecteur-btn-play-pause"
                   onClick={() => {
                     paused
-                      ? play(accessToken, deviceId, currentTrackInfos, positionInMusic)
+                      ? play(accessToken, deviceId, currentTrackId, positionInMusic)
                       : pause(accessToken, deviceId);
                   }}
                 >

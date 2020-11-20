@@ -265,3 +265,7 @@ td {
 .UserName {
   margin-right: 20px;
 }
+
+.UserName:hover {
+  text-decoration: none;
+}

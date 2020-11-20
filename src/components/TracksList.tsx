@@ -1,13 +1,29 @@
 import React from "react";
 import { Albums, TracksListItem } from "../types/spotify";
+import { play } from "../pages/player";
 
-const TracksList: React.FC = (props) => {
-  const { tracksList } = props as TracksListItem;
-  const { albumImg } = props as Albums;
+type TracksListProps = {
+  accessToken: string;
+  deviceId: string;
+  currentTrackId: string;
+  positionInMusic: number;
+  tracksList: TracksListItem;
+  albumImg: Albums;
+};
+
+const TracksList: React.FC<TracksListProps> = ({
+  accessToken,
+  deviceId,
+  positionInMusic,
+  tracksList,
+  currentTrackId,
+  albumImg,
+}) => {
   const styles = {
     main: {
       border: "2px solid black",
       textAlign: "center" as const,
+      cursor: "pointer",
     },
     global: { width: "-webkit-fill-available" },
     titre: {
@@ -28,6 +44,12 @@ const TracksList: React.FC = (props) => {
     },
   };
 
+  const setMusicToPlay = (id: string) => {
+    currentTrackId = id;
+    positionInMusic = 0;
+    play(accessToken, deviceId, currentTrackId, positionInMusic);
+  };
+
   return (
     <>
       <div className="tracksList">
@@ -44,7 +66,7 @@ const TracksList: React.FC = (props) => {
             <th>Artist</th>
             <th>Titre</th>
           </tr>
-          {tracksList.map((track) => {
+          {tracksList.map((track: any) => {
             return (
               <>
                 {/* <li key={track.id}>{track.name}</li> */}
@@ -53,7 +75,14 @@ const TracksList: React.FC = (props) => {
                     {track.track_number}
                   </td>
                   <td style={styles.main}>{track.artists[0].name}</td>
-                  <td style={styles.main}>{track.name}</td>
+                  <td
+                    onClick={() => {
+                      setMusicToPlay(track.id);
+                    }}
+                    style={styles.main}
+                  >
+                    {track.name}
+                  </td>
                 </tr>
               </>
             );
