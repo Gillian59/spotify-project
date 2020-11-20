@@ -12,7 +12,7 @@ import MainContainer from "../components/MainContainer";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStepForward, faStepBackward, faRandom, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { faStepForward, faStepBackward, faRandom, faSyncAlt, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faPauseCircle, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import NavSideBar from "../components/NavSideBar";
 
@@ -85,6 +85,15 @@ const previous = (accessToken: string, deviceId: string) => {
   });
 };
 
+const setVolume = (accessToken: string, volumeInput: number) => {
+  return fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${volumeInput}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
 const getAlbumTracks = async (accessToken: string, id: string) => {
   return Promise.all([
     fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
@@ -117,6 +126,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
   const [repeatMod, setRepeatMod] = React.useState<string>("off");
   const [repeatCode, setRepeatCode] = React.useState<number>();
   const [albumId, setAlbumId] = React.useState<string>("6akEvsycLGftJxYudPjmqK");
+  const [volumeInput, setVolumeInput] = React.useState<number>(50);
 
   React.useEffect(() => {
     const playerStateChanged = (state: SpotifyState) => {
@@ -160,6 +170,14 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     });
   }, [albumId]);
 
+  // React.useEffect(() => {
+  //   player &&
+  //     player.getVolume().then((volume: number) => {
+  //       const volume_percentage = volume * 100;
+  //       setVolumeInput(volume_percentage);
+  //     });
+  // }, [volumeInput]);
+
   React.useEffect(() => {
     let handler: NodeJS.Timeout;
     if (!paused && currentTrackInfos && positionInMusic <= currentTrackInfos.duration_ms) {
@@ -196,6 +214,13 @@ const Player: NextPage<Props> = ({ accessToken }) => {
     repeat(accessToken, repeatMod);
   };
 
+  const setVolumeFromState = (value: number) => {
+    if (volumeInput != 0 && volumeInput != 100) {
+      setVolumeInput(Math.floor(volumeInput + value));
+      setVolume(accessToken, volumeInput);
+    }
+  };
+
   return (
     <Layout isLoggedIn={true}>
       <MainContainer>
@@ -210,7 +235,7 @@ const Player: NextPage<Props> = ({ accessToken }) => {
               <small className="track-text-info">{artisteName}</small>
             </Col>
             <Col md={1}></Col>
-            <Col md={6} id="progress-bar-and-buttons">
+            <Col md={7} id="progress-bar-and-buttons">
               <div id="lecteur-buttons">
                 <button
                   id={isShuffle ? "shuffle-btn-on" : "shuffle-btn-off"}
@@ -267,7 +292,27 @@ const Player: NextPage<Props> = ({ accessToken }) => {
                 <small>{showTime(currentTrackInfos ? currentTrackInfos.duration_ms : 1)}</small>
               </Row>
             </Col>
-            <Col md={3} />
+            <Col md={2} id="song-and-artiste">
+              <Row>
+                <button
+                  className="lecteur-btn"
+                  onClick={() => {
+                    setVolumeFromState(-10);
+                  }}
+                >
+                  <FontAwesomeIcon className="icon" icon={faMinus} />
+                </button>
+                <p>{volumeInput}%</p>
+                <button
+                  className="lecteur-btn"
+                  onClick={() => {
+                    setVolumeFromState(10);
+                  }}
+                >
+                  <FontAwesomeIcon className="icon" icon={faPlus} />
+                </button>
+              </Row>
+            </Col>
           </Row>
         </MusicControls>
       </MainContainer>
